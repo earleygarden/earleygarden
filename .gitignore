@@ -1,0 +1,18 @@
+# 依赖与构建产物
+node_modules/
+dist/
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# 本地产物：录屏素材、调试输出
+tools/out*/
+video/
+*.log
+encode.sh
+encode.log
+smoke.mjs
+.sim/

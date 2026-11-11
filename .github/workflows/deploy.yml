@@ -1,0 +1,53 @@
+name: 部署到 GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只跑一次部署，新的推送顶掉排队中的旧任务
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # 仓库名是 <用户名>.github.io，站点服务在根路径，
+      # 所以 base 保持默认的 "/"，站内那些写死的 /assets/... 才能对上
+      - run: npm run build
+
+      # 这里不要加 enablement: true —— 它需要仓库管理员权限，
+      # GITHUB_TOKEN 拿不到，会直接把这一步跑挂（已实测）。
+      # Pages 的源要先在仓库 Settings → Pages 里手动设成「GitHub Actions」，
+      # 之后这个工作流只管构建与发布。
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
