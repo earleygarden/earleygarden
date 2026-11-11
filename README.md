@@ -8,19 +8,26 @@
 
 **在线访问**：https://earleygarden.github.io/earleygarden/
 
+![入口：门口的海](docs/screens/01-entrance.jpg)
+
 ---
 
-## 展厅里的七个去处
+## 七个去处
 
-| 场景 | 内容 |
-| --- | --- |
-| 门口 | 潮水与岛的入口，四个去处从这里分岔 |
-| 地图 | 一张手绘岛图，鼠标扫过会亮起名字 |
-| 鳄梨岛文献馆 | 一排关于作品的报道。点开书，书会翻页；翻到的那一页夹着一封信 |
-| 海浪影院 | 片单、分类、竖屏放映。放的是自己的片子 |
-| 音乐树 | 四首原创配乐，挂在树上，摘下耳机就响 |
-| 开发者沙滩 | 一只猫。点它会抬头 |
-| 幻想灯塔 | 点灯，展开一封写在信纸上的话 |
+| 地图 | 鳄梨岛文献馆 |
+|:--:|:--:|
+| ![地图](docs/screens/02-map.jpg) | ![文献馆](docs/screens/03-archive.jpg) |
+| 一张手绘岛图，鼠标扫过会亮起去处 | 点开书，书会翻页；翻到的那一页夹着一封信 |
+
+| 海浪影院 | 音乐树 |
+|:--:|:--:|
+| ![影院](docs/screens/04-cinema.jpg) | ![音乐树](docs/screens/05-music.jpg) |
+| 片单、分类、放映。放的是自己的片子 | 配乐挂在树上，摘下耳机就响 |
+
+| 开发者沙滩 | 幻想灯塔 |
+|:--:|:--:|
+| ![沙滩](docs/screens/06-beach.jpg) | ![灯塔](docs/screens/07-lighthouse.jpg) |
+| 一只猫。点它会抬头 | 点灯，展开一封写在信纸上的话 |
 
 ## 做了什么
 
@@ -55,6 +62,9 @@ npm run build    # 产出 dist/
 
 推送到 `main` 分支即由 GitHub Actions 自动构建并发布到 GitHub Pages（见 `.github/workflows/deploy.yml`）。
 
+仓库名不是 `<用户名>.github.io`，站点因此挂在 `/earleygarden/` 子路径下。资源路径统一由
+`src/data/base.js` 取前缀（`vite.config.js` 里 `base: './'`），换仓库名或换托管都不用改代码。
+
 ## 目录
 
 ```
@@ -65,6 +75,7 @@ src/
   scenes/           七个场景各自的实现
   data/             作品、片单、曲目、报道等数据
 public/assets/      插画、影片、音频
+docs/screens/       README 用的场景截图
 ```
 
 ---
