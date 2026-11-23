@@ -73,7 +73,8 @@ export const UNDERSEA_VIEWS = {
             {
               id: 'baishe',
               title: '白蛇传之我叫王道灵',
-              sub: '预告 · 腾讯视频在播',
+              // 全片单里最长的一条副题（26 个字）。排版就按它能不能折两行来定
+              sub: '全国首部由一人剧组独立完成的上线网大 · 发布当天实现盈利',
               film: 'films/baishe.mp4',
               poster: 'covers/baishe.jpg'
             }
@@ -93,14 +94,14 @@ export const UNDERSEA_VIEWS = {
             {
               id: 'laihuwai',
               title: '崃户外',
-              sub: '文旅宣传片',
+              sub: '邛崃市“崃户外”文旅品牌宣传片',
               film: 'films/laihuwai.mp4',
               poster: 'covers/laihuwai.jpg'
             },
             {
               id: 'xuhang',
               title: '续航',
-              sub: '宜宾动力电池公益宣传片',
+              sub: '宜宾市动力电池产业推广宣传片',
               film: 'films/xuhang.mp4',
               poster: 'covers/xuhang.jpg'
             }
@@ -113,14 +114,16 @@ export const UNDERSEA_VIEWS = {
             {
               id: 'peiban',
               title: '陪伴',
-              sub: '七彩虹品牌获奖短片',
+              sub: '七彩虹“将星”品牌广告片',
               film: 'films/peiban.mp4',
               poster: 'covers/peiban.jpg'
             },
             {
+              // 项目文件夹叫「鸭始皇」，成片文件却叫「吾皇驾到.mp4」。
+              // 对外用的是《鸭始皇》——2026-11-23 本人确认，片名以这个为准
               id: 'wuhuang',
-              title: '吾皇驾到',
-              sub: '文旅机器人广告片',
+              title: '鸭始皇',
+              sub: '西安黑客松项目具身机器人“鸭始皇”广告片',
               film: 'films/wuhuang.mp4',
               poster: 'covers/wuhuang.jpg'
             }

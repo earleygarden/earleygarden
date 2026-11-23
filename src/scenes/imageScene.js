@@ -36,6 +36,15 @@ import { createAudioPlayer } from '../core/player.js'
 import { createDotReveal } from '../core/reveal.js'
 import { createReportLetter } from './reportLetter.js'
 
+/**
+ * 幕上片单首页的标题。
+ *
+ * 原来写的是「鳄梨岛原创影院」，2026-11-23 改成作品集署名 —— 这一页对外发的
+ * 时候是名片，得先告诉人这是谁的东西。折回来时（setLevel 里回四类）也用这一句，
+ * 所以提成常量，两处不会再走散。
+ */
+const BOARD_TITLE = '易小楠 / 成都鳄梨岛作品集展示'
+
 export function createImageScene({
   assets,
   size,
@@ -196,7 +205,7 @@ export function createImageScene({
     head.className = 'cs-head'
     const headTitle = document.createElement('span')
     headTitle.className = 'cs-title'
-    headTitle.textContent = '鳄梨岛原创影院'
+    headTitle.textContent = BOARD_TITLE
     // 两侧的细线由 CSS 的 ::before / ::after 画，居中才像片头
     head.appendChild(headTitle)
     board.appendChild(head)
@@ -484,7 +493,7 @@ export function createImageScene({
       board.classList.toggle('is-l2', onList)
       up.classList.toggle('on', onList)
 
-      headTitle.textContent = onList && activeCat ? activeCat.label : '鳄梨岛原创影院'
+      headTitle.textContent = onList && activeCat ? activeCat.label : BOARD_TITLE
       headTitle.classList.toggle('is-link', onList)
 
       foot.textContent = onList

@@ -1071,6 +1071,15 @@
     color: #EAF2F0; font-weight: 500; white-space: nowrap;
     text-shadow: 0 0 calc(var(--u) * 1.3) rgba(190, 226, 232, 0.32);
   }
+  /* 首页标题是「易小楠 / 成都鳄梨岛作品集展示」，十五个字。
+     0.34em 的字距是给"电影""MV"这种两三个字的分类名留的 ——
+     十五个字按那个间距排开，一眼看过去是十五个孤字，不是一句话。
+     所以只在四类首页收紧（片单层仍按分类名那套走，字少需要间距撑着） */
+  .cs-board:not(.is-l2) .cs-title {
+    letter-spacing: 0.12em;
+    padding-left: 0.12em;
+  }
+
   /* 提示落在最底下，像银幕上的一行小字 */
   .cs-foot {
     position: relative;
@@ -1204,7 +1213,14 @@
    */
   .cinema-slot:not(.is-compact):not(.is-tiny) .cs-cols {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(calc(var(--u) * 21), 1fr));
+    /* 列宽加个上限（28u）。原来写的是 1fr —— 两部片的分类会被撑成两列各占一半，
+       图高 141，加两行副题就顶出幕底 3px；而三部片的分类每列只有 161。
+       同一个厅里两种卡片大小不一样，本来也不像一张片单。
+       封顶之后一/二/三部都是同一个尺寸，整体居中。
+       28 不是随手写的：幕框去掉左右内边距还剩 95.2u，三列加两道 3.4u 的缝，
+       每列最多 29.5u —— 30u 就差这半个 u，三张会被挤成两行 */
+    grid-template-columns: repeat(auto-fit, minmax(calc(var(--u) * 21), calc(var(--u) * 28)));
+    justify-content: center;
     gap: calc(var(--u) * 1.6) calc(var(--u) * 3.4);
     align-content: center;
     padding-top: calc(var(--u) * 0.7);
@@ -1233,9 +1249,12 @@
      两层的条目本来就该一样大；标题 3.15u 仍高它们一档 */
   .cinema-slot:not(.is-compact):not(.is-tiny) .cs-name { font-size: calc(var(--u) * 3.05); }
 
-  /* 单部的分类：整条幕只放一张，居中，卡宽 44u（约 217×122）。
-     46u 试过 —— 1440 下量出来 166.8 的卡塞进 168.1 的排片区还差一点点，
-     差的那 1px 正好落在下沿，纸边压到幕的黑边上。44u 留出余量 */
+  /* 单部的分类：整条幕只放这一张，居中。
+   *
+   * 2026-11-23 从"图在上、字在下"的竖卡改成"左图右文"。起因是副题从
+   * 一句状态变成了作品介绍，《白蛇传》那条 26 个字在 44u 宽的竖卡里折成两行，
+   * 卡片上下各顶出幕 6px —— 而且竖卡再宽就超过幕高了，没有别的路可走。
+   * 横过来之后图能放到 33u（181×102），文字栏还剩 223px，两行介绍不用挤。 */
   .cinema-slot:not(.is-compact):not(.is-tiny) .cs-cols.is-one {
     display: grid;
     grid-template-columns: 1fr;
@@ -1246,7 +1265,31 @@
     padding-top: 0;
   }
   .cinema-slot:not(.is-compact):not(.is-tiny) .cs-cols.is-one .cs-card {
-    width: calc(var(--u) * 44);
+    width: calc(var(--u) * 76);
+    flex-direction: row;
+    align-items: center;
+    gap: calc(var(--u) * 2.2);
+    text-align: left;
+    padding: 0;
+  }
+  .cinema-slot:not(.is-compact):not(.is-tiny) .cs-cols.is-one .cs-thumb {
+    width: calc(var(--u) * 33); height: calc(var(--u) * 18.6);
+    aspect-ratio: auto;
+    flex: 0 0 auto;
+  }
+  .cinema-slot:not(.is-compact):not(.is-tiny) .cs-cols.is-one .cs-txt {
+    flex: 1 1 auto; min-width: 0;
+    align-items: flex-start;
+    gap: calc(var(--u) * 0.7);
+  }
+  /* 横过来以后片名有整整一栏，不用再省略号截断 */
+  .cinema-slot:not(.is-compact):not(.is-tiny) .cs-cols.is-one .cs-name {
+    white-space: normal;
+  }
+  /* 这一格是全站的门面，介绍给到三行 —— 别的分类只有两行的余地 */
+  .cinema-slot:not(.is-compact):not(.is-tiny) .cs-cols.is-one .cs-sub {
+    -webkit-line-clamp: 3;
+    font-size: calc(var(--u) * 2.1);
   }
 
   /* 「回分类」：只在片单层出现。
@@ -1354,9 +1397,16 @@
   .cs-sub {
     /* 1.95u ≈ 9.6px（原 1.6u / 7.9px）。7.9px 在任何屏上都不该是正文尺寸，
        它和片名一样要跟着片名抬 —— 但始终比片名小一档，不能抢主次 */
-    font-size: calc(var(--u) * 1.95); letter-spacing: 0.04em;
+    font-size: calc(var(--u) * 1.95); letter-spacing: 0.02em;
     color: rgba(178, 202, 202, 0.44);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    /* 2026-11-23：副题从"一句状态"变成了"作品介绍"。
+       《白蛇传》那条 26 个字，一行塞不下 —— 用 nowrap 截断就等于把介绍说一半，
+       所以改成最多折两行；也不无限折，再多就把卡片顶出幕外了 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal; overflow: hidden;
+    line-height: 1.45;
   }
   .cs-card.is-pending .cs-name { color: rgba(232, 241, 239, 0.46); }
 
@@ -1371,8 +1421,11 @@
 
   .cs-video {
     display: block; width: 100%; height: 100%;
-    /* 16:9 的片子放进 2.2:1 的幕里，左右留的黑边和黑幕融为一体 */
-    object-fit: contain;
+    /* 2026-11-23：从 contain 改成 cover。
+       16:9 的片子放进 2.2:1 的幕里，contain 会在左右各留 60 多像素黑边，
+       看着像"片子在幕中间一条"。cover 让它铺满整块幕，
+       代价是上下各裁掉约 12% —— 这是"铺满"必然要付的，不裁就一定有边 */
+    object-fit: cover;
     background: #000;
   }
   .cs-video.is-off { display: none; }
