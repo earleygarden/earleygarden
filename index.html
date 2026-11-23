@@ -1071,14 +1071,8 @@
     color: #EAF2F0; font-weight: 500; white-space: nowrap;
     text-shadow: 0 0 calc(var(--u) * 1.3) rgba(190, 226, 232, 0.32);
   }
-  /* 首页标题是「易小楠 / 成都鳄梨岛作品集展示」，十五个字。
-     0.34em 的字距是给"电影""MV"这种两三个字的分类名留的 ——
-     十五个字按那个间距排开，一眼看过去是十五个孤字，不是一句话。
-     所以只在四类首页收紧（片单层仍按分类名那套走，字少需要间距撑着） */
-  .cs-board:not(.is-l2) .cs-title {
-    letter-spacing: 0.12em;
-    padding-left: 0.12em;
-  }
+  /* 首页标题回到「鳄梨岛原创影院」七个字，0.34em 那套字距正好撑得住，
+     所以原先为十五字加的那条收紧规则一并撤掉 —— 七个字按 0.12em 排会挤成一团 */
 
   /* 提示落在最底下，像银幕上的一行小字 */
   .cs-foot {
@@ -1417,26 +1411,26 @@
     opacity: 0; pointer-events: none;
     transition: opacity 320ms ease;
   }
-  /* 2026-11-23：放映不再困在那块 2.2:1 的幕里。
-     点开就是整个窗口的 16:9 画面 —— 不裁，也没有左右那两条黑。
-     16:9 的屏上严丝合缝；16:10 的笔记本上下各留约 5%，比原来左右各 19% 少得多。
-     .cabin-frame 是 absolute + overflow:hidden，但它没有 transform / filter，
-     不构成 fixed 的包含块，所以这里逃得出去、也不会被它裁掉。 */
-  .cinema-slot.is-playing .cs-stage {
-    opacity: 1; pointer-events: auto;
-    position: fixed; inset: 0; z-index: 300;
-  }
+  /* 2026-11-23 两次反复，结论留在这里：
+     曾试过放映时让舞台 fixed 铺满整个窗口，画面确实满、也确实不裁，
+     但那等于离开了水下影院这块幕。本人定的调子是——
+     默认就在幕里放，允许左右留黑；想看满屏由播放者自己点视频控制条上的全屏键。
+     所以下面不再给舞台任何 fixed。 */
+  .cinema-slot.is-playing .cs-stage { opacity: 1; pointer-events: auto; }
 
   .cs-video {
     display: block; width: 100%; height: 100%;
     /* 画面永远不裁 —— 这一条是硬的。
      *
-     * 两块比例不同的屏，靠 contain 让片子完整落在里面，多出来的地方是黑。
-     * 舞台一变成全窗口（见上面 .cs-stage），那块黑就从"幕的左右两条"
-     * 缩成"16:10 屏的上下各 5%"，等于满屏。
+     * 幕是 2.2:1（548×249 这种量级），片子是 16:9。两块比例不同的屏，
+     * contain 让整幅画面落在幕里，多出来的左右两条是黑。
+     * 那两条黑和幕本身是同一个 #000，看着是画面外的暗场，不是另外加的边框。
      *
-     * 曾经试过 cover 去填满那块 2.2:1 的幕，上下各裁掉约 10% 画面，
-     * 不能接受，退回来了。不裁优先于填满。 */
+     * 试过 cover 去填满，上下各裁掉约 10% 画面，不能接受，退回来了。
+     * 不裁优先于填满 —— 这是本人的取舍，别再改回去。
+     *
+     * 想满屏就点控制条上的全屏键：那时浏览器接管，画面铺满显示器，
+     * 片源已经是 1080p，放大到 1920 宽也是 1:1，不会糊。 */
     object-fit: contain;
     background: #000;
   }
@@ -1464,30 +1458,6 @@
     background: rgba(14, 44, 50, 0.82);
     border-color: rgba(190, 240, 246, 0.55);
     color: #F2FCFD;
-  }
-
-  /* 全窗口放映时 --u 只有 4~7px（1% 幕宽），照搬会缩成一粒。
-     这时尺寸改用固定像素，跟着窗口走而不是跟着幕走 */
-  .cinema-slot.is-playing .cs-back {
-    left: 22px; top: 22px;
-    gap: 5px; padding: 8px 16px 8px 12px;
-    font-size: 14px;
-  }
-  .cinema-slot.is-playing .cs-back i { font-size: 18px; margin-top: -2px; }
-  .cinema-slot.is-playing .cs-plate-title { font-size: 20px; }
-  .cinema-slot.is-playing .cs-plate-note { font-size: 14px; }
-
-  /* 放映时把站内那几个固定件让开。
-     场馆的返回按钮和「片单」都蹲在左上角，它还带着 backdrop-filter，
-     实打实盖在舞台上面 —— 不让开的话出口点不到。
-     放映本来就是全窗口的事，这些东西这时候也不该在场。 */
-  body.is-immersive .cabin-back,
-  body.is-immersive .corner,
-  body.is-immersive .room-head,
-  body.is-immersive .hint,
-  body.is-immersive .intro-guide {
-    visibility: hidden !important;
-    pointer-events: none !important;
   }
 
   /* 片源没到 / 读不出来：幕上放一块提示牌，不假装能播。
