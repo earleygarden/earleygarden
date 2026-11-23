@@ -474,6 +474,11 @@ export function createImageScene({
       },
 
       dispose() {
+        // 放映中途被切走（换场景、退回地图）也要把这个状态摘掉，
+        // 否则回到别的房间时站内按钮全是隐形的
+        playing = false
+        slot.classList.remove('is-playing')
+        document.body.classList.remove('is-immersive')
         try { video.pause() } catch { /* 已经没了 */ }
         video.removeAttribute('src')
         try { video.load() } catch { /* 忽略 */ }
@@ -533,6 +538,8 @@ export function createImageScene({
       current = item
       playing = true
       slot.classList.add('is-playing')
+      // 放映是全窗口的，站内那几个固定件要让开（见 index.html 里 body.is-immersive）
+      document.body.classList.add('is-immersive')
 
       if (!item.film) {
         video.removeAttribute('src')
@@ -562,6 +569,7 @@ export function createImageScene({
       playing = false
       current = null
       slot.classList.remove('is-playing')
+      document.body.classList.remove('is-immersive')
       try { video.pause() } catch { /* 忽略 */ }
       // 退回它所在的那一类，而不是一路退回四类首页 ——
       // 看完一部想的是"这一类里还有没有别的"，不是"我重新选一遍分类"

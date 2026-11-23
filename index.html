@@ -1417,21 +1417,26 @@
     opacity: 0; pointer-events: none;
     transition: opacity 320ms ease;
   }
-  .cinema-slot.is-playing .cs-stage { opacity: 1; pointer-events: auto; }
+  /* 2026-11-23：放映不再困在那块 2.2:1 的幕里。
+     点开就是整个窗口的 16:9 画面 —— 不裁，也没有左右那两条黑。
+     16:9 的屏上严丝合缝；16:10 的笔记本上下各留约 5%，比原来左右各 19% 少得多。
+     .cabin-frame 是 absolute + overflow:hidden，但它没有 transform / filter，
+     不构成 fixed 的包含块，所以这里逃得出去、也不会被它裁掉。 */
+  .cinema-slot.is-playing .cs-stage {
+    opacity: 1; pointer-events: auto;
+    position: fixed; inset: 0; z-index: 300;
+  }
 
   .cs-video {
     display: block; width: 100%; height: 100%;
-    /* 2026-11-23：试过 cover（铺满整块幕），上下各裁掉约 10% 画面 —— 导演不能接受，
-       改回 contain。
+    /* 画面永远不裁 —— 这一条是硬的。
      *
-     * 这是一道硬约束，不是参数没调好：幕的比例是 2.2:1（548×249），片子是 16:9。
-     * 两者比例不同，"铺满"和"不裁"只能二选一，中间没有第三种可能。
-     * 现在的取舍是画面完整优先 —— 视频按幕高撑满（16:9 时 443×249），
-     * 左右各留 52px 黑。那两条黑和幕本身是同一个 #000，
-     * 视觉上就是画面外的暗场，不是另外加了一条边。
+     * 两块比例不同的屏，靠 contain 让片子完整落在里面，多出来的地方是黑。
+     * 舞台一变成全窗口（见上面 .cs-stage），那块黑就从"幕的左右两条"
+     * 缩成"16:10 屏的上下各 5%"，等于满屏。
      *
-     * 想让"满屏且不裁"同时成立，只有一条路：播放时让画面铺满整个浏览器窗口
-     * （16:9 的屏正好严丝合缝），代价是离开水下影院这块幕。 */
+     * 曾经试过 cover 去填满那块 2.2:1 的幕，上下各裁掉约 10% 画面，
+     * 不能接受，退回来了。不裁优先于填满。 */
     object-fit: contain;
     background: #000;
   }
@@ -1459,6 +1464,30 @@
     background: rgba(14, 44, 50, 0.82);
     border-color: rgba(190, 240, 246, 0.55);
     color: #F2FCFD;
+  }
+
+  /* 全窗口放映时 --u 只有 4~7px（1% 幕宽），照搬会缩成一粒。
+     这时尺寸改用固定像素，跟着窗口走而不是跟着幕走 */
+  .cinema-slot.is-playing .cs-back {
+    left: 22px; top: 22px;
+    gap: 5px; padding: 8px 16px 8px 12px;
+    font-size: 14px;
+  }
+  .cinema-slot.is-playing .cs-back i { font-size: 18px; margin-top: -2px; }
+  .cinema-slot.is-playing .cs-plate-title { font-size: 20px; }
+  .cinema-slot.is-playing .cs-plate-note { font-size: 14px; }
+
+  /* 放映时把站内那几个固定件让开。
+     场馆的返回按钮和「片单」都蹲在左上角，它还带着 backdrop-filter，
+     实打实盖在舞台上面 —— 不让开的话出口点不到。
+     放映本来就是全窗口的事，这些东西这时候也不该在场。 */
+  body.is-immersive .cabin-back,
+  body.is-immersive .corner,
+  body.is-immersive .room-head,
+  body.is-immersive .hint,
+  body.is-immersive .intro-guide {
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 
   /* 片源没到 / 读不出来：幕上放一块提示牌，不假装能播。
