@@ -55,10 +55,15 @@ export const UNDERSEA_VIEWS = {
        *   品牌短片、剧情短片             → 短片
        * 如果哪一部归错了，改它所在的数组就行 —— 分类名不写在这里，
        * 由这个数组的顺序决定（见下面的 label）。
+       *
+       * id 是给链接用的 ASCII 别名，出现在 URL 里（#/undersea/movie）。
+       * 中文 label 塞进地址栏会被转义成一串 %E7%94%B5%E5%BD%B1，
+       * 发出去又长又难看，所以两套名字分开：label 给人看，id 给地址用。
        */
       groups: [
         {
           label: '电影',
+          id: 'movie',
           items: [
             {
               id: 'baishe',
@@ -71,6 +76,7 @@ export const UNDERSEA_VIEWS = {
         },
         {
           label: 'MV',
+          id: 'mv',
           items: [
             {
               id: 'buhuo',
@@ -91,6 +97,7 @@ export const UNDERSEA_VIEWS = {
         },
         {
           label: '短片',
+          id: 'short',
           items: [
             {
               id: 'peiban',
@@ -103,6 +110,7 @@ export const UNDERSEA_VIEWS = {
         },
         {
           label: '宣传片',
+          id: 'promo',
           items: [
             {
               id: 'jincai',

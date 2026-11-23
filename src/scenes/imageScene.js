@@ -41,6 +41,7 @@ export function createImageScene({
   size,
   views,
   initial,
+  initialCat,
   onExit,
   onView,
   onNav,
@@ -445,6 +446,23 @@ export function createImageScene({
 
       /** Esc 用：在放片就先退回片单，不直接退出房间 */
       toBoard,
+
+      /** 片单 → 四分类。浏览器从 #/undersea/movie 退回 #/undersea 时要用 */
+      toCats,
+
+      /**
+       * 按分类 id 直接进某一类的片单。
+       *
+       * 给对外链接用：`#/undersea/movie` 进来就该停在这张图上，
+       * 而不是先让人看一遍四分类。id 对不上（旧链接、手打错的地址）
+       * 就原地返回 false，停在四分类 —— 宁可少跳一层，也不要白屏。
+       */
+      openCategory(id) {
+        const g = c.groups.find((x) => x.id === id)
+        if (!g) return false
+        openCat(g)
+        return true
+      },
 
       dispose() {
         try { video.pause() } catch { /* 已经没了 */ }
@@ -957,6 +975,11 @@ export function createImageScene({
   setView(initial && views[initial] ? initial : firstView, false)
   measure()
 
+  // 外部链接可以直接落到某一类（#/undersea/movie 这种）。
+  // 必须放在 setView 之后 —— cinema 是在 ensureLayer 里建的，
+  // 图层没搭起来之前它还是 null，早了什么也开不了。
+  if (initialCat) cinema?.openCategory(initialCat)
+
   // 水每帧重画一次；只画当前视图那一层。播放器的音量与进度也在这里推
   let lastFrame = performance.now()
   const update = () => {
@@ -1001,6 +1024,17 @@ export function createImageScene({
     ui: [root],
     labels: null,
     defaultView: firstView,
-    setView: (v) => setView(views[v] ? v : firstView, false)
+    setView: (v) => {
+      if (views[v]) {
+        // 点的是当前这一层（比如从 #/undersea/movie 退回 #/undersea），
+        // 里面还得从片单退回四分类 —— 否则「返回」看起来像没反应
+        if (v === activeId && cinema) cinema.toCats()
+        return setView(v, false)
+      }
+      // 不是视图名，当分类 id 试一下：#/undersea → #/undersea/movie
+      // 不用重挂整间屋子，直接摊开那一类
+      if (cinema?.openCategory(v)) return
+      setView(firstView, false)
+    }
   }
 }

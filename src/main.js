@@ -115,11 +115,17 @@ function buildRoute(name, sub) {
         backLabel: underseaFrom === 'garden' ? '回到岛上' : '回到地图'
       }
     }
+    // #/undersea/movie 这类链接：sub 是分类 id（movie / mv / short / promo），
+    // 不是视图名。视图一律停在 room，分类交给 initialCat 摊开。
+    // 对外推广的链接就长这样，进来直接是片单，不用先看一遍四分类。
+    const catIds = UNDERSEA_VIEWS.room.cinema.groups.map((g) => g.id)
+    const cat = sub && catIds.includes(sub) ? sub : null
     return createImageScene({
       assets: UNDERSEA_ASSETS,
       size: UNDERSEA_SIZE,
       views,
-      initial: sub || 'room',
+      initial: 'room',
+      initialCat: cat,
       onExit: () => go(underseaFrom)
     })
   }
