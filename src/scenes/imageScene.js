@@ -507,7 +507,7 @@ export function createImageScene({
       colEls[1].replaceChildren()
       const half = Math.ceil(list.length / 2)
       list.forEach((card, i) => colEls[i < half ? 0 : 1].appendChild(card))
-      // 只有一部的分类（电影、短片）在一整块幕上只剩左上角一小块，
+      // 只有一部的分类（电影）在一整块幕上只剩左上角一小块，
       // 看着像没加载完。给它单开一种摆法：居中、放大，当"主打"来放
       cols.classList.toggle('is-one', list.length === 1)
       setLevel('list')

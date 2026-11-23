@@ -48,11 +48,16 @@ export const UNDERSEA_VIEWS = {
       /**
        * 幕上分两层：先四类，点进去才看见这一类里的片子。
        *
-       * 分类就这四种（电影 / MV / 短片 / 宣传片），不增不减 ——
+       * 分类就这四种，不增不减 ——
        * 一层四格、每格写着"几部"，观众一眼知道自己拍过什么、各有多少。
-       * 归类的依据只看片子自己的 sub：
-       *   招引宣传片、公益宣传片、广告片 → 宣传片
-       *   品牌短片、剧情短片             → 短片
+       * 顺序是片子的分量：长片在前，MV 垫后。
+       *   电影   → 院线/网络电影
+       *   宣传片 → 城市、机构、文旅的招引与公益片
+       *   广告片 → 品牌片、产品片
+       *    MV    → 歌
+       * 原先把「广告片」叫「短片」，2026-11-23 改的名 —— 品牌片、产品片
+       * 本来就是广告，叫短片反而绕。改的只是这一格的名字，位置也没动过。
+       *
        * 如果哪一部归错了，改它所在的数组就行 —— 分类名不写在这里，
        * 由这个数组的顺序决定（见下面的 label）。
        *
@@ -75,6 +80,53 @@ export const UNDERSEA_VIEWS = {
           ]
         },
         {
+          label: '宣传片',
+          id: 'promo',
+          items: [
+            {
+              id: 'jincai',
+              title: '锦才通关记',
+              sub: '锦江区人才招引宣传片',
+              film: 'films/jincai.mp4',
+              poster: 'covers/jincai.jpg'
+            },
+            {
+              id: 'laihuwai',
+              title: '崃户外',
+              sub: '文旅宣传片',
+              film: 'films/laihuwai.mp4',
+              poster: 'covers/laihuwai.jpg'
+            },
+            {
+              id: 'xuhang',
+              title: '续航',
+              sub: '宜宾动力电池公益宣传片',
+              film: 'films/xuhang.mp4',
+              poster: 'covers/xuhang.jpg'
+            }
+          ]
+        },
+        {
+          label: '广告片',
+          id: 'ad',
+          items: [
+            {
+              id: 'peiban',
+              title: '陪伴',
+              sub: '七彩虹品牌获奖短片',
+              film: 'films/peiban.mp4',
+              poster: 'covers/peiban.jpg'
+            },
+            {
+              id: 'wuhuang',
+              title: '吾皇驾到',
+              sub: '文旅机器人广告片',
+              film: 'films/wuhuang.mp4',
+              poster: 'covers/wuhuang.jpg'
+            }
+          ]
+        },
+        {
           label: 'MV',
           id: 'mv',
           items: [
@@ -92,47 +144,6 @@ export const UNDERSEA_VIEWS = {
               sub: '',
               film: 'films/jimao.mp4',
               poster: 'covers/jimao.jpg'
-            }
-          ]
-        },
-        {
-          label: '短片',
-          id: 'short',
-          items: [
-            {
-              id: 'peiban',
-              title: '陪伴',
-              sub: '七彩虹品牌获奖短片',
-              film: 'films/peiban.mp4',
-              poster: 'covers/peiban.jpg'
-            }
-          ]
-        },
-        {
-          label: '宣传片',
-          id: 'promo',
-          items: [
-            {
-              id: 'jincai',
-              title: '锦才通关记',
-              sub: '锦江区人才招引宣传片',
-              // 片源还没发过来。排片上照样占一格 —— 片单是"我拍过什么"，
-              // 不是"服务器上有什么"；点进去会说明还没放进来
-              film: null
-            },
-            {
-              id: 'xuhang',
-              title: '续航',
-              sub: '宜宾动力电池公益宣传片',
-              film: 'films/xuhang.mp4',
-              poster: 'covers/xuhang.jpg'
-            },
-            {
-              id: 'wuhuang',
-              title: '吾皇驾到',
-              sub: '文旅机器人广告片',
-              film: 'films/wuhuang.mp4',
-              poster: 'covers/wuhuang.jpg'
             }
           ]
         }
