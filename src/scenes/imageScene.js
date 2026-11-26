@@ -40,10 +40,11 @@ import { createReportLetter } from './reportLetter.js'
  * 幕上片单首页的标题。
  *
  * 2026-11-23 一度改成作品集署名「易小楠 / 成都鳄梨岛作品集展示」，
- * 当天又改回「鳄梨岛原创影院」—— 这一页对外发的是影院，不是个人名片。
+ * 当天又改回影院名 —— 这一页对外发的是影院，不是个人名片。
+ * 2026-11-24 影院改名「鳄梨岛海浪影院」，这里是全站统一后的同一个名字。
  * 折回来时（setLevel 里回四类）也用这一句，所以提成常量，两处不会走散。
  */
-const BOARD_TITLE = '鳄梨岛原创影院'
+const BOARD_TITLE = '鳄梨岛海浪影院'
 
 export function createImageScene({
   assets,
@@ -362,7 +363,7 @@ export function createImageScene({
     for (const card of cards) colEls[0].appendChild(card)
 
     // 提示条落在画面最底下，像银幕上的一行小字。
-    // 原先是挂在标题栏右边的，和"鳄梨岛原创影院"并排 —— 那是网页顶栏的写法
+    // 原先是挂在标题栏右边的，和"鳄梨岛海浪影院"并排 —— 那是网页顶栏的写法
     const foot = document.createElement('div')
     foot.className = 'cs-foot'
     board.appendChild(foot)
@@ -408,7 +409,7 @@ export function createImageScene({
     let playing = false
     let current = null
 
-    // 先把第一层摆好：四类、标题"鳄梨岛原创影院"
+    // 先把第一层摆好：四类、标题"鳄梨岛海浪影院"
     setLevel('cats')
 
     const api = {

@@ -80,6 +80,11 @@ uniform sampler2D uTex;
 uniform sampler2D uMask;   // 0 = 不给光（黑幕 / 沙发），1 = 可以打光
 uniform float uHasMask;
 uniform float uTime;
+// 采样窗口（图像归一化坐标，左上角原点）：xy = 左上角，zw = 宽高。
+// 默认 (0, 0, 1, 1) 就是整张图，站内的用法一个像素都不变。
+// 独立影院页推镜时靠它"只取幕周围那一块"，而不是把 canvas 拉大 ——
+// 拉大会把渲染结果放大，焦散那张细网先糊成一团。
+uniform vec4 uWindow;
 
 varying vec2 vUv;
 
@@ -103,7 +108,8 @@ float noise2(vec2 p) {
 void main() {
   // 画布只盖它自己那一层，图层宽高 == 图的显示宽高，
   // 所以 vUv 一次上下翻转就是图片的归一化坐标。
-  vec2 uv = vec2(vUv.x, 1.0 - vUv.y);
+  // uWindow 再把这套坐标收进一个窗口里（默认整张开满，等于没裁）。
+  vec2 uv = uWindow.xy + vec2(vUv.x, 1.0 - vUv.y) * uWindow.zw;
 
   // ── 原图一个像素都不动。这条是这一版的全部要点，不要再改成 uv + off。
   vec3 col = texture2D(uTex, uv).rgb;
@@ -217,7 +223,8 @@ export function createAqua(url, maskUrl) {
     uTex: { value: placeholder },
     uMask: { value: placeholder },
     uHasMask: { value: 0 },
-    uTime: { value: 0 }
+    uTime: { value: 0 },
+    uWindow: { value: new THREE.Vector4(0, 0, 1, 1) }
   }
 
   const material = new THREE.ShaderMaterial({
@@ -300,10 +307,20 @@ export function createAqua(url, maskUrl) {
     renderer.dispose()
   }
 
+  /**
+   * 换采样窗口（图像归一化坐标，左上角原点）。
+   * 只影响"取哪一块图"，不影响频率标定 —— 凑近看时光带会跟着变宽：
+   * 那本来就是对的效果，镜头走近了，墙上的光斑自然更大。
+   */
+  function setWindow(x, y, w, h) {
+    uniforms.uWindow.value.set(x, y, w, h)
+  }
+
   return {
     canvas,
     resize,
     render,
+    setWindow,
     dispose,
     isReady: () => ready
   }
